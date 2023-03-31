@@ -9,6 +9,8 @@ namespace StarterMod.Projectiles
     // Can be tested with ExampleCustomAmmoGun
     public class BossHomingProjectile : ModProjectile
     {
+        public override string Texture => $"Terraria/Images/Item_{ItemID.FallenStar}";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Example Homing Projectile"); // Name of the projectile. It can be appear in chat

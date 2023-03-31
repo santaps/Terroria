@@ -1,20 +1,21 @@
 ﻿using StarterMod.Projectiles;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent.Creative;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarterMod.Items
 {
-    public class SpecialBow : ModItem
+    public class CursedFrostfireBow : ModItem
     {
-        public override string Texture => $"Terraria/Images/Item_{ItemID.IceBow}";
+        public override string Texture => $"Terraria/Images/Item_{ItemID.ShadowFlameBow}";
 
         public override void SetStaticDefaults()
         {
             // DisplayName.SetDefault("TutorialSword"); // By default, capitalization in classnames will add spaces to the display name. You can customize the display name here by uncommenting this line.
-            Tooltip.SetDefault("Extra icy magic bow.");
+            Tooltip.SetDefault("Very cursed Frostfire Bow. Use at your own risk. 75% chance to not use ammo.");
 
             CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1; // How many items are needed in order to research duplication of this item in Journey mode.
         }
@@ -25,12 +26,12 @@ namespace StarterMod.Items
             Item.width = 12;
             Item.height = 28;
             //Item.scale = 0.75f;
-            Item.rare = ItemRarityID.Cyan;
-            Item.value = 1250125; // vendor value
+            Item.rare = ItemRarityID.Purple;
+            Item.value = Item.sellPrice(1, 50, 0, 0); // vendor value
 
             // Animation properties
-            Item.useTime = 20; // The item's use time in ticks (60 ticks == 1 second.)
-            Item.useAnimation = 20; // The length of the item's use animation in ticks (60 ticks == 1 second.)
+            Item.useTime = 15; // The item's use time in ticks (60 ticks == 1 second.)
+            Item.useAnimation = 15; // The length of the item's use animation in ticks (60 ticks == 1 second.)
             Item.useStyle = ItemUseStyleID.Shoot; // How you use the item (swinging, holding out, etc.)
             Item.autoReuse = true;
 
@@ -38,8 +39,8 @@ namespace StarterMod.Items
             Item.UseSound = SoundID.Item5;
 
             // Weapon stats
-            Item.damage = 50;
-            Item.crit = 6;
+            Item.damage = 65;
+            Item.crit = 11;
             Item.DamageType = DamageClass.Ranged;
             Item.knockBack = 5f;
             Item.noMelee = true; // no contact damage with animation
@@ -58,39 +59,48 @@ namespace StarterMod.Items
             // Note that returning true does NOT allow you to force ammo consumption; this currently requires use of IL editing or detours.
             if (player.ItemUsesThisAnimation == 0)
                 return Main.rand.NextFloat() >= 0.75f; // 75% chance not to use ammo
- 
+
             return true;
         }
 
         // Changes normal wooden arrows into frostburn arrows
-        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) 
+        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
-            if (type == ProjectileID.WoodenArrowFriendly) {
-                type = ModContent.ProjectileType<SpecialProjectile>();
+            if (type == ProjectileID.WoodenArrowFriendly)
+            {
+                type = ModContent.ProjectileType<CursedFrostfireProjectile>();
             }
         }
 
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient(ItemID.IceBlock, 100);
-            recipe.AddIngredient(ItemID.IceBow, 1);
-            recipe.AddIngredient(ItemID.FrostburnArrow, 999);
+            recipe.AddIngredient(ItemID.ShadowFlameBow);
+            recipe.AddIngredient(ModContent.ItemType<SpecialBow>());
+            recipe.AddIngredient(ItemID.CursedArrow, 999);
             recipe.AddTile(TileID.WorkBenches);
             recipe.Register();
         }
 
 
-        // This method lets you adjust position of the gun in the player's hands. Play with these values until it looks good with your graphics.
-        /*public override Vector2? HoldoutOffset()
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            return new Vector2(2f, -2f);
-        }*/
+            const int numberProjectiles = 5;
+
+            // Current arrow angles: 0, +5, -10, +15, -20
+            for (int i = 0, y = 1; i < numberProjectiles; i++, y *= -1)
+            {
+                Vector2 newVelocity = velocity.RotatedBy(MathHelper.ToRadians(5*i*y));
+
+                Projectile.NewProjectileDirect(source, position, newVelocity, type, damage, knockback, player.whoAmI);
+            }
+            return false;
+        }
 
         // What if I wanted multiple projectiles in a even spread? (Vampire Knives)
         // Even Arc style: Multiple Projectile, Even Spread
         /*public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            float numberProjectiles = 3 + Main.rand.Next(3); // 3, 4, or 5 shots
+            float numberProjectiles = 3;
             float rotation = MathHelper.ToRadians(45);
 
             position += Vector2.Normalize(velocity) * 45f;

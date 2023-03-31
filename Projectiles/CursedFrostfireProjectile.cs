@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace StarterMod.Projectiles
 {
-    public class SpecialProjectile : ModProjectile
+    public class CursedFrostfireProjectile : ModProjectile
     {
         public override string Texture => $"Terraria/Images/Item_{ItemID.FrostburnArrow}";
         public int bounce = 3;
@@ -32,12 +32,12 @@ namespace StarterMod.Projectiles
             Projectile.friendly = true; // Can the projectile deal damage to enemies?
             Projectile.hostile = false; // Can the projectile deal damage to the player?
 
-            Projectile.ignoreWater = false; // Does the projectile's speed be influenced by water?
+            Projectile.ignoreWater = true; // Does the projectile's speed be influenced by water?
             Projectile.tileCollide = true; // Can the projectile collide with tiles?
             Projectile.timeLeft = 600; // The live time for the projectile (60 = 1 second, so 600 is 10 seconds)
             Projectile.extraUpdates = 1; // Set to above 0 if you want the projectile to update multiple time in a frame
 
-            Projectile.penetrate = 4; // How many monsters the projectile can penetrate.
+            Projectile.penetrate = 5; // How many monsters the projectile can penetrate.
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity)
@@ -72,6 +72,7 @@ namespace StarterMod.Projectiles
         {
             target.AddBuff(BuffID.Frostburn, 300, false);
             target.AddBuff(BuffID.OnFire, 300, false);
+            target.AddBuff(BuffID.CursedInferno, 300, false);
         }
 
 

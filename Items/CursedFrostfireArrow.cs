@@ -6,9 +6,9 @@ using Terraria.ModLoader;
 
 namespace StarterMod.Items
 {
-    public class SpecialArrow : ModItem
+    public class CursedFrostfireArrow : ModItem
     {
-        public override string Texture => $"Terraria/Images/Item_{ItemID.FrostburnArrow}";
+        public override string Texture => $"Terraria/Images/Item_{ItemID.CursedArrow}";
 
         public override void SetStaticDefaults()
         {
@@ -23,7 +23,7 @@ namespace StarterMod.Items
             Item.width = 10; // The width of item hitbox
             Item.height = 28; // The height of item hitbox
 
-            Item.damage = 20; // The damage for projectiles isn't actually 8, it actually is the damage combined with the projectile and the item together
+            Item.damage = 25; // The damage for projectiles isn't actually 8, it actually is the damage combined with the projectile and the item together
             Item.DamageType = DamageClass.Ranged; // What type of damage does this ammo affect?
 
             Item.maxStack = 999; // The maximum number of items that can be contained within a single stack
@@ -31,7 +31,7 @@ namespace StarterMod.Items
             Item.knockBack = 5f; // Sets the item's knockback. Ammunition's knockback added together with weapon and projectiles.
             Item.value = Item.sellPrice(0, 1, 0, 0); // Item price in copper coins (can be converted with Item.sellPrice/Item.buyPrice)
             Item.rare = ItemRarityID.Yellow; // The color that the item's name will be in-game.
-            Item.shoot = ModContent.ProjectileType<Projectiles.SpecialProjectile>(); // The projectile that weapons fire when using this item as ammunition.
+            Item.shoot = ModContent.ProjectileType<Projectiles.CursedFrostfireProjectile>(); // The projectile that weapons fire when using this item as ammunition.
 
             Item.ammo = Item.type; // Important. The first item in an ammo class sets the AmmoID to its type
         }
@@ -39,9 +39,9 @@ namespace StarterMod.Items
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe(999);
-            recipe.AddIngredient(ItemID.IceBlock, 200);
+            recipe.AddIngredient(ItemID.CursedArrow, 999);
             recipe.AddIngredient(ItemID.FrostburnArrow, 999);
-            recipe.AddIngredient(ItemID.IceBlade);
+            recipe.AddIngredient(ItemID.NightsEdge);
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.Register();
         }
