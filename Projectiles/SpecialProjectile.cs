@@ -21,9 +21,9 @@ namespace StarterMod.Projectiles
 
         public override void SetDefaults()
         {
-            Projectile.width = 10; // The width of projectile hitbox
-            Projectile.height = 28; // The height of projectile hitbox
-            Projectile.light = 2f; // How much light emit around the projectile
+            Projectile.width = 8; // The width of projectile hitbox
+            Projectile.height = 8; // The height of projectile hitbox
+            Projectile.light = 1f; // How much light emit around the projectile
 
             Projectile.aiStyle = 1; // The ai style of the projectile (0 means custom AI). For more please reference the source code of Terraria
             AIType = ProjectileID.WoodenArrowFriendly;

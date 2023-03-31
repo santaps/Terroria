@@ -13,7 +13,7 @@ namespace StarterMod.Items
         public override void SetStaticDefaults()
         {
             // DisplayName.SetDefault("TutorialSword"); // By default, capitalization in classnames will add spaces to the display name. You can customize the display name here by uncommenting this line.
-            Tooltip.SetDefault("Frostfire Arrow for Frostfire Bow.");
+            Tooltip.SetDefault("Cursed Frostfire Arrow for Cursed Frostfire Bow.");
 
             CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 999; // How many items are needed in order to research duplication of this item in Journey mode.
         }

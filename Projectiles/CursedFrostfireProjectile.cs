@@ -14,15 +14,15 @@ namespace StarterMod.Projectiles
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Frostfire Arrow"); // Name of the projectile. It can be appear in chat
+            DisplayName.SetDefault("Cursed Frostfire Arrow"); // Name of the projectile. It can be appear in chat
 
             ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = false; // Make the cultist resistant to this projectile, as it's resistant to all homing projectiles.
         }
 
         public override void SetDefaults()
         {
-            Projectile.width = 10; // The width of projectile hitbox
-            Projectile.height = 28; // The height of projectile hitbox
+            Projectile.width = 8; // The width of projectile hitbox
+            Projectile.height = 8; // The height of projectile hitbox
             Projectile.light = 2f; // How much light emit around the projectile
 
             Projectile.aiStyle = 1; // The ai style of the projectile (0 means custom AI). For more please reference the source code of Terraria

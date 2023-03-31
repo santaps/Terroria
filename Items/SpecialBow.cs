@@ -1,6 +1,8 @@
 ﻿using StarterMod.Projectiles;
 using Microsoft.Xna.Framework;
+using System;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent.Creative;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -13,8 +15,8 @@ namespace StarterMod.Items
 
         public override void SetStaticDefaults()
         {
-            // DisplayName.SetDefault("TutorialSword"); // By default, capitalization in classnames will add spaces to the display name. You can customize the display name here by uncommenting this line.
-            Tooltip.SetDefault("Extra icy magic bow.");
+            DisplayName.SetDefault("FrostfireBow"); // By default, capitalization in classnames will add spaces to the display name. You can customize the display name here by uncommenting this line.
+            Tooltip.SetDefault("Extra icy magic bow. 50% chance not to use ammo.");
 
             CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1; // How many items are needed in order to research duplication of this item in Journey mode.
         }
@@ -46,7 +48,7 @@ namespace StarterMod.Items
 
             // Shoot / Bow properties
             Item.shoot = ProjectileID.PurificationPowder; // For some reason, all the guns in the vanilla source have this.
-            Item.shootSpeed = 16f; // The speed of the projectile (measured in pixels per frame.)
+            Item.shootSpeed = 10f; // The speed of the projectile (measured in pixels per frame.)
             Item.useAmmo = AmmoID.Arrow; // The "ammo Id" of the ammo item that this weapon uses. Ammo IDs are magic numbers that usually correspond to the item id of one item that most commonly represent the ammo type.
         }
 
@@ -57,7 +59,7 @@ namespace StarterMod.Items
             // This returns true by default; returning false for any reason will prevent ammo consumption.
             // Note that returning true does NOT allow you to force ammo consumption; this currently requires use of IL editing or detours.
             if (player.ItemUsesThisAnimation == 0)
-                return Main.rand.NextFloat() >= 0.75f; // 75% chance not to use ammo
+                return Main.rand.NextFloat() >= 0.5f; // 50% chance not to use ammo
  
             return true;
         }
@@ -67,7 +69,28 @@ namespace StarterMod.Items
         {
             if (type == ProjectileID.WoodenArrowFriendly) {
                 type = ModContent.ProjectileType<SpecialProjectile>();
+                damage += 20; // Hardcode to test for now
             }
+        }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            const int numberProjectiles = 3;
+            const float angle = 5f;
+            int angleOffset = numberProjectiles / 2;
+            float startingAngleOffset = -angle * angleOffset;
+            //Vector2 offset = new Vector2(velocity.X, velocity.Y);
+            //Vector2 offset = velocity * 3;
+            //position += offset;
+
+            // Even spread with odd number of arrows
+            for (int i = 0; i < numberProjectiles; i++)
+            {
+                Vector2 newVelocity = velocity.RotatedBy(MathHelper.ToRadians(startingAngleOffset + angle * i));
+
+                Projectile.NewProjectileDirect(source, position, newVelocity, type, damage, knockback, player.whoAmI);
+            }
+            return false;
         }
 
         public override void AddRecipes()
