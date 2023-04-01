@@ -63,7 +63,7 @@ namespace StarterMod.Items
             return true;
         }
 
-        // Changes normal wooden arrows into frostburn arrows
+        // Changes normal wooden arrows into cursed frostfire arrows
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
             if (type == ProjectileID.WoodenArrowFriendly) {

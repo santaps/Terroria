@@ -7,7 +7,7 @@ using StarterMod.NPCs;
 
 namespace StarterMod.Items
 {
-    // This is the item used to summon a boss, in this case the modded Minion Boss from Example Mod. For vanilla boss summons, see comments in SetStaticDefaults
+    // This is the item used to summon LearningBoss
     public class LearningBossSummon : ModItem
     {
         public override void SetStaticDefaults()
@@ -20,7 +20,6 @@ namespace StarterMod.Items
 
             // If this would be for a vanilla boss that has no summon item, you would have to include this line here:
             // NPCID.Sets.MPAllowedEnemies[NPCID.Plantera] = true;
-
             // Otherwise the UseItem code to spawn it will not work in multiplayer
         }
 
@@ -71,7 +70,6 @@ namespace StarterMod.Items
             return true;
         }
 
-        // Please see Content/ExampleRecipes.cs for a detailed explanation of recipe creation.
         public override void AddRecipes()
         {
             CreateRecipe()

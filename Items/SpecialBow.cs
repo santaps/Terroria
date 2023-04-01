@@ -64,7 +64,7 @@ namespace StarterMod.Items
             return true;
         }
 
-        // Changes normal wooden arrows into frostburn arrows
+        // Changes normal wooden arrows into frostfire arrows
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) 
         {
             if (type == ProjectileID.WoodenArrowFriendly) {
@@ -79,9 +79,6 @@ namespace StarterMod.Items
             const float angle = 5f;
             int angleOffset = numberProjectiles / 2;
             float startingAngleOffset = -angle * angleOffset;
-            //Vector2 offset = new Vector2(velocity.X, velocity.Y);
-            //Vector2 offset = velocity * 3;
-            //position += offset;
 
             // Even spread with odd number of arrows
             for (int i = 0; i < numberProjectiles; i++)
@@ -110,20 +107,5 @@ namespace StarterMod.Items
             return new Vector2(2f, -2f);
         }*/
 
-        // What if I wanted multiple projectiles in a even spread? (Vampire Knives)
-        // Even Arc style: Multiple Projectile, Even Spread
-        /*public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            float numberProjectiles = 3 + Main.rand.Next(3); // 3, 4, or 5 shots
-            float rotation = MathHelper.ToRadians(45);
-
-            position += Vector2.Normalize(velocity) * 45f;
-
-            for (int i = 0; i < numberProjectiles; i++) {
-                Vector2 perturbedSpeed = velocity.RotatedBy(MathHelper.Lerp(-rotation, rotation, i / (numberProjectiles - 1))) * .2f; // Watch out for dividing by 0 if there is only 1 projectile.
-                Projectile.NewProjectile(source, position, perturbedSpeed, type, damage, knockback, player.whoAmI);
-            }
-
-            return false; // return false to stop vanilla from calling Projectile.NewProjectile.
-        }*/
     }
 }

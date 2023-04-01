@@ -5,15 +5,14 @@ using Terraria.ModLoader;
 
 namespace StarterMod.Projectiles
 {
-    // This Example show how to implement simple homing projectile
-    // Can be tested with ExampleCustomAmmoGun
+
     public class BossHomingProjectile : ModProjectile
     {
         public override string Texture => $"Terraria/Images/Item_{ItemID.FallenStar}";
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Example Homing Projectile"); // Name of the projectile. It can be appear in chat
+            DisplayName.SetDefault("Homing Star of Death"); // Name of the projectile. It can be appear in chat
 
             ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true; // Make the cultist resistant to this projectile, as it's resistant to all homing projectiles.
         }
@@ -42,7 +41,7 @@ namespace StarterMod.Projectiles
             float projSpeed = 1f; // The speed at which the projectile moves towards the target
 
 
-            // Trying to find NPC closest to the projectile
+            // Trying to find Player closest to the projectile
             Player closestPlayer = FindClosestPlayer(maxDetectRadius);
             if (closestPlayer == null)
                 return;
@@ -60,17 +59,11 @@ namespace StarterMod.Projectiles
             // Using squared values in distance checks will let us skip square root calculations, drastically improving this method's speed.
             float sqrMaxDetectDistance = maxDetectDistance * maxDetectDistance;
 
-            // Loop through all NPCs(max always 200)
-            for (int k = 0; k < Main.maxNPCs; k++)
+            // Loop through all players
+            for (int k = 0; k < Main.maxPlayers; k++)
             {
                 Player target = Main.player[k];
-                // Check if NPC able to be targeted. It means that NPC is
-                // 1. active (alive)
-                // 2. chaseable (e.g. not a cultist archer)
-                // 3. max life bigger than 5 (e.g. not a critter)
-                // 4. can take damage (e.g. moonlord core after all it's parts are downed)
-                // 5. hostile (!friendly)
-                // 6. not immortal (e.g. not a target dummy)
+                // Player is alive
                 if (target.active)
                 {
                     // The DistanceSquared function returns a squared distance between 2 points, skipping relatively expensive square root calculations
@@ -88,6 +81,7 @@ namespace StarterMod.Projectiles
             return closestPlayer;
         }
 
+        /*
         // Finding the closest NPC to attack within maxDetectDistance range
         // If not found then returns null
         public NPC FindClosestNPC(float maxDetectDistance)
@@ -124,5 +118,6 @@ namespace StarterMod.Projectiles
 
             return closestNPC;
         }
+        */
     }
 }
