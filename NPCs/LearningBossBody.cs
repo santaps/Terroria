@@ -275,12 +275,47 @@ namespace StarterMod.NPCs
         {
             Vector2 toPlayer = player.Center - NPC.Center;
 
+            float offsetX = 300f;
+            float maxDistance = 400f;
+            float sqrMaxDistance = maxDistance * maxDistance;
+            float sqrDistanceToTarget = Vector2.DistanceSquared(player.Center, NPC.Center);
+
+            Vector2 abovePlayer = player.Top + new Vector2(NPC.direction * offsetX, -NPC.height);
+
+            Vector2 toAbovePlayer = abovePlayer - NPC.Center;
+            Vector2 toAbovePlayerNormalized = toAbovePlayer.SafeNormalize(Vector2.UnitY);
+
+            float changeDirOffset = offsetX * 0.7f;
+
+            if (NPC.direction == -1 && NPC.Center.X - changeDirOffset < abovePlayer.X ||
+                NPC.direction == 1 && NPC.Center.X + changeDirOffset > abovePlayer.X)
+            {
+                NPC.direction *= -1;
+            }
+
+            float speed = 8f;
+            float inertia = 40f;
+
+            // If the boss is too far from the player, speed up
+            if (sqrMaxDistance > sqrDistanceToTarget)
+            {
+                speed += 10f;
+            }
+
+            Vector2 moveTo = toAbovePlayerNormalized * speed;
+            //NPC.velocity = (NPC.velocity * (inertia - 1) + moveTo) / inertia;
+
 
             ShootLaser(player);
 
             SpawnHomingProj(player);
 
-            NPC.damage = NPC.defDamage * 2;
+            DashingAttack(player);
+
+            NPC.damage = NPC.defDamage;
+
+            // Turn towards the player/target at end of tick
+            NPC.rotation = toPlayer.ToRotation() - MathHelper.PiOver2;
         }
 
         private void ShootLaser(Player player)
@@ -336,6 +371,33 @@ namespace StarterMod.NPCs
                 int type = ModContent.ProjectileType<BossHomingProjectile>();
                 int damage = 10;
                 Projectile.NewProjectile(source, position, direction * speed, type, damage, 0f, Main.myPlayer);
+            }
+        }
+
+        private void DashingAttack(Player player)
+        {
+            Vector2 toPlayer = player.Center - NPC.Center;
+
+            float offsetX = 400f;
+            float maxDistance = 600f;
+            float sqrMaxDistance = maxDistance * maxDistance;
+            float sqrDistanceToTarget = Vector2.DistanceSquared(player.Center, NPC.Center);
+
+            float speed = 15f;
+            NPC.damage = NPC.defDamage * 2;
+
+            // Dash at start of stage 2 and after spawning homingProj
+            if (NPC.localAI[2] == 0) { 
+                NPC.velocity = toPlayer.SafeNormalize(Vector2.Zero) * speed;
+                NPC.rotation = toPlayer.ToRotation() - MathHelper.PiOver2;
+            }
+
+            // Double dash if below 15%
+            // Only use 30 ticks after 1st dash
+            if (NPC.life <= NPC.lifeMax * 0.15f && NPC.localAI[2] == 30)
+            {
+                NPC.velocity = toPlayer.SafeNormalize(Vector2.Zero) * speed;
+                NPC.rotation = toPlayer.ToRotation() - MathHelper.PiOver2;
             }
         }
 
