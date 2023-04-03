@@ -15,6 +15,8 @@ namespace StarterMod.Projectiles
             DisplayName.SetDefault("Homing Star of Death"); // Name of the projectile. It can be appear in chat
 
             ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true; // Make the cultist resistant to this projectile, as it's resistant to all homing projectiles.
+
+            Main.projFrames[Projectile.type] = 8;
         }
 
         // Setting the default parameters of the projectile
@@ -31,7 +33,7 @@ namespace StarterMod.Projectiles
             Projectile.ignoreWater = true; // Does the projectile's speed be influenced by water?
             Projectile.light = 1f; // How much light emit around the projectile
             Projectile.tileCollide = false; // Can the projectile collide with tiles?
-            Projectile.timeLeft = 600; // The live time for the projectile (60 = 1 second, so 600 is 10 seconds)
+            Projectile.timeLeft = 720; // The live time for the projectile (60 = 1 second, so 600 is 10 seconds)
         }
 
         // Custom AI

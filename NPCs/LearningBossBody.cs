@@ -197,7 +197,7 @@ namespace StarterMod.NPCs
             if (player.dead) {
                 // If the targeted player is dead, flee
                 NPC.velocity.Y -= 0.04f;
-                // This method makes it so when the boss is in "despawn range" (outside of the screen), it despawns in 10 ticks
+                // This method makes it so when the boss is in "despawn range" (outside of the screen), it despawns in 30 ticks
                 NPC.EncourageDespawn(30);
                 return;
             }
@@ -296,14 +296,13 @@ namespace StarterMod.NPCs
             float speed = 8f;
             float inertia = 40f;
 
-            // If the boss is too far from the player, speed up
-            if (sqrMaxDistance > sqrDistanceToTarget)
+            // If the boss is too far from the player, get closer
+            if (sqrMaxDistance < sqrDistanceToTarget)
             {
-                speed += 10f;
+                //speed += 10f;
+                Vector2 moveTo = toAbovePlayerNormalized * speed;
+                NPC.velocity = (NPC.velocity * (inertia - 1) + moveTo) / inertia;
             }
-
-            Vector2 moveTo = toAbovePlayerNormalized * speed;
-            //NPC.velocity = (NPC.velocity * (inertia - 1) + moveTo) / inertia;
 
 
             ShootLaser(player);
@@ -384,7 +383,7 @@ namespace StarterMod.NPCs
             float sqrDistanceToTarget = Vector2.DistanceSquared(player.Center, NPC.Center);
 
             float speed = 15f;
-            NPC.damage = NPC.defDamage * 2;
+            NPC.damage = NPC.defDamage * 3; // Broken because 'main' DoSecondStage loop resets dmg too quick (next tick)
 
             // Dash at start of stage 2 and after spawning homingProj
             if (NPC.localAI[2] == 0) { 
@@ -392,10 +391,20 @@ namespace StarterMod.NPCs
                 NPC.rotation = toPlayer.ToRotation() - MathHelper.PiOver2;
             }
 
-            // Double dash if below 15%
-            // Only use 30 ticks after 1st dash
-            if (NPC.life <= NPC.lifeMax * 0.15f && NPC.localAI[2] == 30)
+            // Double dash if below 25%
+            // Only use 60 ticks after 1st dash
+            if (NPC.life <= NPC.lifeMax * 0.25f && NPC.localAI[2] == 60)
             {
+                SoundEngine.PlaySound(SoundID.Zombie10, NPC.Center); // QUACK
+                NPC.velocity = toPlayer.SafeNormalize(Vector2.Zero) * speed;
+                NPC.rotation = toPlayer.ToRotation() - MathHelper.PiOver2;
+            }
+
+            // Triple dash if below 15%
+            // Only use 120 ticks after 1st dash, 60 ticks after 2nd
+            if (NPC.life <= NPC.lifeMax * 0.15f && NPC.localAI[2] == 120)
+            {
+                SoundEngine.PlaySound(SoundID.Zombie11, NPC.Center); // QUACK 2
                 NPC.velocity = toPlayer.SafeNormalize(Vector2.Zero) * speed;
                 NPC.rotation = toPlayer.ToRotation() - MathHelper.PiOver2;
             }
