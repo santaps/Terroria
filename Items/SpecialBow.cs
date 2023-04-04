@@ -40,7 +40,7 @@ namespace StarterMod.Items
             Item.UseSound = SoundID.Item5;
 
             // Weapon stats
-            Item.damage = 50;
+            Item.damage = 500;
             Item.crit = 6;
             Item.DamageType = DamageClass.Ranged;
             Item.knockBack = 5f;
