@@ -9,6 +9,7 @@ using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.PlayerDrawLayer;
 
 namespace StarterMod.NPCs
 {
@@ -329,18 +330,37 @@ namespace StarterMod.NPCs
 
         private void SpinningLaserAttack(Player player)
         {
-            float timerMax = 60 * 30;
+            float timerMax = 60 * 10;
 
             if (NPC.localAI[2] > timerMax)
             {
                 NPC.localAI[2] = 0;
             }
 
-            if (NPC.localAI[2] == 0)
+            if (NPC.localAI[2] == 0 && Main.netMode != NetmodeID.MultiplayerClient)
             {
+                // Teleport somewhere above the player & stop moving
                 NPC.velocity = Vector2.Zero;
                 Vector2 offsetVec = new Vector2(Main.rand.NextFloat(-300f, 301f), Main.rand.NextFloat(-400f, -200f));
                 NPC.Center = player.Center + offsetVec;
+
+
+                // Create the lasers
+                var source = NPC.GetSource_FromAI();
+
+                Vector2 position = NPC.Center;
+                Vector2 directionX = new Vector2(1f, 0f);
+                Vector2 directionY = new Vector2(0f, 1f);
+                float speed = 1f;
+
+                //int type = ModContent.ProjectileType<BossHomingProjectile>();
+                int type = ProjectileID.PurpleLaser;
+                int damage = 100;
+
+                Projectile.NewProjectile(source, position+directionX*50f, directionX * speed, type, damage, 0f, Main.myPlayer);
+                Projectile.NewProjectile(source, position-directionX*50f, -directionX * speed, type, damage, 0f, Main.myPlayer);
+                Projectile.NewProjectile(source, position+directionY*50f, directionY * speed, type, damage, 0f, Main.myPlayer);
+                Projectile.NewProjectile(source, position-directionY*50f, -directionY * speed, type, damage, 0f, Main.myPlayer);
             }
 
             NPC.localAI[2]++;
