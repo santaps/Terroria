@@ -2,6 +2,7 @@
 using StarterMod.Projectiles;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -331,10 +332,16 @@ namespace StarterMod.NPCs
         private void SpinningLaserAttack(Player player)
         {
             float timerMax = 60 * 10;
+            float speed = 1f;
 
             if (NPC.localAI[2] > timerMax)
             {
                 NPC.localAI[2] = 0;
+            }
+
+            if (NPC.localAI[3] > 180)
+            {
+                NPC.localAI[3] = 0;
             }
 
             if (NPC.localAI[2] == 0 && Main.netMode != NetmodeID.MultiplayerClient)
@@ -351,7 +358,6 @@ namespace StarterMod.NPCs
                 Vector2 position = NPC.Center;
                 Vector2 directionX = new Vector2(1f, 0f);
                 Vector2 directionY = new Vector2(0f, 1f);
-                float speed = 1f;
 
                 //int type = ModContent.ProjectileType<BossHomingProjectile>();
                 int type = ProjectileID.PurpleLaser;
@@ -363,7 +369,28 @@ namespace StarterMod.NPCs
                 Projectile.NewProjectile(source, position-directionY*50f, -directionY * speed, type, damage, 0f, Main.myPlayer);
             }
 
+            if (NPC.localAI[2] < 200 && NPC.localAI[3] % 60 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                var source = NPC.GetSource_FromAI();
+                Vector2 position = NPC.Center;
+
+                int type = ProjectileID.PurpleLaser;
+                int damage = 100;
+
+                // Rotate the direction of the projectile
+                float angle = 45f * (NPC.localAI[3] / 60);
+                Vector2 directionX = new Vector2(1f, 0f).RotatedBy(MathHelper.ToRadians(angle));
+                Vector2 directionY = new Vector2(0f, 1f).RotatedBy(MathHelper.ToRadians(angle));
+
+                // Shoot every second for 3 seconds after main shot
+                Projectile.NewProjectile(source, position + directionX * 50f, directionX * speed, type, damage, 0f, Main.myPlayer);
+                Projectile.NewProjectile(source, position - directionX * 50f, -directionX * speed, type, damage, 0f, Main.myPlayer);
+                Projectile.NewProjectile(source, position + directionY * 50f, directionY * speed, type, damage, 0f, Main.myPlayer);
+                Projectile.NewProjectile(source, position - directionY * 50f, -directionY * speed, type, damage, 0f, Main.myPlayer);
+            }
+
             NPC.localAI[2]++;
+            NPC.localAI[3]++;
         }
 
     }
